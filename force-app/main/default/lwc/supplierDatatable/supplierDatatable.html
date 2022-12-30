@@ -1,0 +1,25 @@
+<template>
+    
+        <lightning-card>
+            <lightning-datatable data={SupplierLIST} columns={columns} key-field="Id" >
+            </lightning-datatable>
+        </lightning-card>
+       
+        <lightning-card>
+                <lightning-button
+                variant="brand"
+                label="Place Order"
+                title="Begins the task"
+                onclick={handlePlaceOrder}
+                icon-position="right"
+            >
+            </lightning-button>
+
+            </lightning-card>
+            
+        </template>
+
+    
+    
+    
+</template>
