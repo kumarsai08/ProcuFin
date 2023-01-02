@@ -2,6 +2,7 @@ import { LightningElement,track,api } from 'lwc';
 
 export default class Stages_Parent_Component extends LightningElement {
     @api selectedsupplierdetails;
+    @api Orders;
     
     //currentvalue = '1';
    // selectedvalue = 'Inventory Summary';
@@ -53,8 +54,8 @@ export default class Stages_Parent_Component extends LightningElement {
 
     pathHandler3(event){
         console.log('line 52');
-        var targetValue = event.currentTarget.value;
-        var selectedvalue = event.currentTarget.label;
+        var targetValue = event.detail.value;
+        var selectedvalue = event.detail.label;
         this.currentvalue = targetValue;
         this.selectedvalue = selectedvalue;
         console.log('line 56' + this.currentvalue);
@@ -66,7 +67,24 @@ export default class Stages_Parent_Component extends LightningElement {
         console.log('line 65'+this.summary+this.PlaceOrder+this.send);
 
     }
+    pathHandler4(event){
+        console.log('line 52');
+        var targetValue = event.detail.value;
+        var selectedvalue = event.detail.label;
+        this.currentvalue = targetValue;
+        this.selectedvalue = selectedvalue;
+        console.log('line 56' + this.currentvalue);
+        console.log('line 57'+ this.selectedvalue);
+        
+        this.summary=false;
+        this.PlaceOrder=false;
+        this.send=false;
+        this.Orders=true;
+        console.log('line 65'+this.summary+this.PlaceOrder+this.send);
+
+    }
     
+
     
          
         

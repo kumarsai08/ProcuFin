@@ -10,12 +10,20 @@ public with sharing class GetSuppleirDetails {
 
     }
     @AuraEnabled
-    public static list<Quote> SendAnEmail(String productid,list<String> supplierids,string productname,String Orderquantity,String WarehouseName){
+    public static list<Quote> SendAnEmail(String productid,list<String> supplierids,string productname,String Orderquantity,String WarehouseName,String productcode){
         system.debug('LINE 15'+ productid + supplierids);
-        list<Product_Supplier__c> PSList1= [Select Account__c,Account__r.Email__c,Account__r.Name,Product__r.Name From Product_Supplier__c Where Product__r.id=:Productid and Account__c in :supplierids ];
+        list<Product_Supplier__c> PSList1= [Select Account__c,Account__r.Email__c,Account__r.Name,Product__r.Name,Product__r.ProductCode From Product_Supplier__c Where Product__r.id=:Productid and Account__c in :supplierids ];
+        //string q1='QT'+'-'+'{ '+productname+' }'+ '-'+p.account__r.Name+'-%';
+        //List<Quote> Quoteslist=[ SELECT Name,Id FROM QUOTE WHERE Name Like q1];
         //EmailTemplate tempID = [SELECT Id,HTMLValue,Name FROM EmailTemplate WHERE Id =: System.Label.TEMPLATEID];
         //String emailBody = tempID.HTMLValue;
+        /*if (Quoteslist.isEmpty()) {
+            Integer num=0;
+        } else {
+            Integer num = Integer.ValueOf(Quoteslist[0].Name.substringAfter('-'));
+        }*/
         Integer num=0;
+        
         system.debug('LINE 15'+ productid + supplierids);
         Opportunity opp=new Opportunity();
         opp.Name=productname+' '+WarehouseName;
@@ -27,7 +35,8 @@ public with sharing class GetSuppleirDetails {
         for(Product_supplier__c p:PSList1){
             address.add(p.account__r.Email__c);
             Quote q = new Quote();
-            q.Name= 'QT'+'-'+'{ '+productid+' }'+ string.valueof(num+=1);
+            system.debug(productcode);
+            q.Name= 'QT'+'-'+'{ '+p.Product__r.ProductCode+' }'+ '-'+p.account__r.Name+'-'+string.valueof(num+=1);
             q.OpportunityId=opp.Id;
             q.Order_Quantity__c=decimal.valueOf(Orderquantity);
             q.Supplier__c=p.account__r.Name;
@@ -95,6 +104,58 @@ public with sharing class GetSuppleirDetails {
     @AuraEnabled
     public static list<Quote> GetQuoteDetailsdummy(){
         return [select Id,Name,supplier__c,warehouse__c FROM Quote   ];
+    }
+
+
+    @AuraEnabled
+    public static list<Order> OrderRecords(list<string> supplierNamesList, List<String> WarehouseNamesList,List<Quote> SelectedQuoteRows){
+        system.debug('line 112');
+        List<Order> ordlist= new list<Order>();
+        list<account> lstacc = [select id,name from account where name in : supplierNamesList];
+        list<Schema.Location> lstloc = [select id,name from Location where name in : WarehouseNamesList];
+        map<string ,id> mapsupp = new map<string,id>();
+        map<string,id> maploc = new map<string,id>();
+        for(account acc : lstacc){
+           mapsupp.put(acc.name,acc.id); 
+        }
+        for(Schema.Location loc : lstloc){
+            maploc.put(loc.name,loc.id);
+        }
+        for (Quote q : SelectedQuoteRows) {
+            order orr = new order();
+            orr.AccountId = mapsupp.get(q.supplier__c);
+            orr.Status='Draft';
+            orr.EffectiveDate= System.today();
+            orr.Warehouse__c= maploc.get(q.warehouse__c);
+            ordlist.add(orr);
+            
+        }
+        insert ordlist;
+        return ordlist;
+
+    }
+    @AuraEnabled
+    public static list<Order> OrderRecordsDatatable(){
+        return [SELECT Name,Id,EffectiveDate,Account.Name,Warehouse__c,Warehouse__r.Name,OrderNumber,Status FROM Order ];
+
+    }
+    @AuraEnabled
+    public static void sendemailtosuppliers(list<string> suppliernames){
+        List<Messaging.SingleEmailMessage> emailList = new List<Messaging.SingleEmailMessage>();
+        list<account> ac=[select id,name,Email__c from account where name in:suppliernames];
+        list<string> emailsaddress=new list<String>();
+        for(account acc:ac){
+            emailsaddress.add(acc.Email__c);                
+        }
+        
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        mail.setSubject('Products Required ');
+        mail.sethtmlbody('productss');
+        mail.setToAddresses(emailsaddress);
+        emailList.add(mail);
+         if(!emailList.isEmpty()){
+            Messaging.sendEmail(emailList);
+        }        
     }
 
 }

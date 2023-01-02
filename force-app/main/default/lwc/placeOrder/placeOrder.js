@@ -1,4 +1,5 @@
 import { LightningElement ,api,track,wire} from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import GetSuppleirDetails from '@salesforce/apex/GetSuppleirDetails.GetSuppleirDetails';
 import SendAnEmail from '@salesforce/apex/GetSuppleirDetails.SendAnEmail';
 
@@ -94,7 +95,7 @@ export default class PlaceOrder extends LightningElement {
     HandleSendOrder(event){
         console.log('line 90'+ this.selectedrowonly.Product__c + JSON.stringify(this.ChangeValue) + JSON.stringify(this.ChangedOrderQuantity) + this.selectedrowonly.Product__r.Name+ JSON.stringify(this.selectedrowonly.Warehouse__r.Name));
         
-        SendAnEmail({productid : this.selectedrowonly.Product__c,supplierids: this.ChangeValue,productname : this.selectedrowonly.Product__r.Name,Orderquantity: this.ChangedOrderQuantity,WarehouseName:this.selectedrowonly.Warehouse__r.Name }).then(result=>{
+        SendAnEmail({productid : this.selectedrowonly.Product__c,supplierids: this.ChangeValue,productname : this.selectedrowonly.Product__r.Name,Orderquantity: this.ChangedOrderQuantity,WarehouseName:this.selectedrowonly.Warehouse__r.Name ,productcode:this.selectedrowonly.Product__r.ProductCode}).then(result=>{
             console.log('line 99');
             this.dispatchEvent(new CustomEvent('Supplierdetails', {detail:{slist:result}}));
             
@@ -104,7 +105,12 @@ export default class PlaceOrder extends LightningElement {
         }).catch(error=>{
             console.log(error);
         });
-        
+        const evt = new ShowToastEvent({
+            title: 'EMAILS SENT.',
+            message: 'Emails have been sent to the selected suppliers',
+            variant: 'success'
+        });
+        this.dispatchEvent(evt);
         console.log('line 82'+  this.ChangeValue);
          
     }

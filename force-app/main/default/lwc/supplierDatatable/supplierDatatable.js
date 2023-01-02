@@ -1,10 +1,18 @@
 import { LightningElement,api,track } from 'lwc';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import GetQuoteDetails from '@salesforce/apex/GetSuppleirDetails.GetQuoteDetails';
+import OrderRecords from '@salesforce/apex/GetSuppleirDetails.OrderRecords';
+import sendemailtosuppliers from '@salesforce/apex/GetSuppleirDetails.sendemailtosuppliers';
 import GetQuoteDetailsdummy from '@salesforce/apex/GetSuppleirDetails.GetQuoteDetailsdummy';
 
 export default class SupplierDatatable extends LightningElement {
     @api selectedsuppliersap;
     @api SupplierLIST=[];
+    @api selectedOrders=[];
+    //supplier names list
+    @api sendmailtoselected=[];
+    @api WarehouseNames=[];
+    @api mapsupplierandwarehouse={};
     @track columns = [
     
         {
@@ -67,4 +75,36 @@ export default class SupplierDatatable extends LightningElement {
                 console.log('error'+error);
             })
         }
+
+        handlePlaceOrder(){
+            //selected rows to send orders
+            this.selectedOrders=this.template.querySelector('lightning-datatable').getSelectedRows();
+            this.sendmailtoselected=[];
+            console.log('line 81'+ typeof this.selectedOrders);
+           // console.log('line 75'+ JSON.stringify(this.selectedOrders));
+            console.log("getSelectedRows => ", 
+            JSON.stringify(this.template.querySelector('lightning-datatable').getSelectedRows()));
+            this.selectedOrders.forEach(element => {
+                console.log(element.Supplier__c);
+                console.log(typeof element.Supplier__c);
+                this.sendmailtoselected.push(element.Supplier__c);
+
+                this.WarehouseNames.push(element.warehouse__c);
+                //console.log('line 82'+ this.sendmailtoselected);
+
+                
+                
+            });
+            OrderRecords({supplierNamesList: this.sendmailtoselected, WarehouseNamesList: this.WarehouseNames,SelectedQuoteRows: this.selectedOrders});
+            sendemailtosuppliers({suppliernames : this.sendmailtoselected});
+            
+            const evt = new ShowToastEvent({
+                title: 'ORDERS SENT !!!',
+                message: 'The Order Has been sent to the supplier',
+                variant: 'success'
+            });
+            this.dispatchEvent(evt);
+        }
+           
+        
 }
