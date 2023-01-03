@@ -10,7 +10,7 @@ export default class OrdersDatatable extends LightningElement {
         label: 'Order Id',
         fieldName: 'OrderUrl',
         type : 'url',
-        typeAttributes: {label: { fieldName: 'ordername' }, target: '_blank'},
+        typeAttributes: {label: { fieldName: 'OrderNumber' }, target: '_blank'},
         sortable: true
     },
     {
@@ -26,25 +26,25 @@ export default class OrdersDatatable extends LightningElement {
         type: 'text',
         sortable: true
     },
-    {
+    /*{
         label: 'Warehouse',
         fieldName: 'warehousename',
         type: 'text',
         //typeAttributes: {label: { fieldName: 'WarehouseName' }, target: '_blank'},
         sortable: true
-    },
+    },*/
     {
         label:  'Order Date',
         fieldName: 'EffectiveDate',
         type: 'date',
         sortable: true
-    },
-    {
+    }
+    /*{
         label:  'Order Products',
         fieldName: 'Productname',
         type: 'text',
         sortable: true
-    },
+    },*/
 ];
 connectedCallback(){
     OrderRecordsDatatable({})
@@ -60,16 +60,23 @@ connectedCallback(){
         
         newData.forEach(record => {
            let tempRecs = Object.assign({},record);
+           console.log('LINE 1'+JSON.stringify(tempRecs));
            
            //tempRecs.SupplierName = record.supplier__c;
            tempRecs.suppliername = record.Account.Name;
+           console.log('LINE 2'+record.Account.Name);
            
            tempRecs.OrderUrl='/'+record.Id;
-           tempRecs.ordername= record.OrderNumber;
-           tempRecs.warehousename=record.Warehouse__r.Name;
-            //if(record.Warehouse__r.Name)tempRecs.WarehouseName=record.Warehouse__r.Name;
+           console.log('LINE 3'+record.Id);
+           //tempRecs.ordername= record.OrderNumber;
+           console.log('LINE 4'+record.OrderNumber);
+           //tempRecs.warehousename=record.Warehouse__r.Name;
+           
+           //if(record.Warehouse__r.Name)tempRecs.warehousename=record.Warehouse__r.Name;
+            //Console.log('LINE 5');
            
            templist.push(tempRecs);
+           console.log('LINE 6'+templist);
         });
         this.OrdersLIST=templist;
         console.log('line 61')

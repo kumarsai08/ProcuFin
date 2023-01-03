@@ -22,22 +22,53 @@ public with sharing class GetSuppleirDetails {
         } else {
             Integer num = Integer.ValueOf(Quoteslist[0].Name.substringAfter('-'));
         }*/
-        Integer num=0;
+        Integer num;
+        String oppID;
         
         system.debug('LINE 15'+ productid + supplierids);
+        string s1= productname+' '+WarehouseName;
+        list<Opportunity> opplist=[SELECT Name,Id FROM Opportunity WHERE Name = : s1];
         Opportunity opp=new Opportunity();
-        opp.Name=productname+' '+WarehouseName;
-        opp.StageName='Prospecting';
-        opp.CloseDate=System.today() + 90;
-        insert opp;
+        if (opplist.isEmpty()) {
+            
+            opp.Name=productname+' '+WarehouseName;
+            opp.StageName='Prospecting';
+            opp.CloseDate=System.today() + 90;
+            insert opp;
+            oppID=opp.Id;
+
+            
+        }else {
+            oppID=opplist[0].Id;
+        }
+        string string1='';
+        string s2='';
+        string s3;
+        list<Quote> Quoteslist= [SELECT Name,Id,OpportunityId,Opportunity.Name FROM Quote WHERE OpportunityId =: oppID];
+        integer listsize=Quoteslist.size();
+        if(Quoteslist.isEmpty()){
+             num=0;
+        } else {
+            system.debug('line 50');
+            string1=Quoteslist[listsize-1].Name.substringAfter('-');
+            s2=string1.substringAfter('-');
+            s3=s2.substringAfter('-');
+            system.debug('line 53'+s3);
+
+             num=integer.valueOf(s3);
+             system.debug('line 56'+ num);
+            
+        }
+        
+        
         List<String> address = new List<String>(); 
         list<Quote> Qlist = new list<Quote>();    
         for(Product_supplier__c p:PSList1){
             address.add(p.account__r.Email__c);
             Quote q = new Quote();
             system.debug(productcode);
-            q.Name= 'QT'+'-'+'{ '+p.Product__r.ProductCode+' }'+ '-'+p.account__r.Name+'-'+string.valueof(num+=1);
-            q.OpportunityId=opp.Id;
+            q.Name= 'QT'+'-'+'{ '+p.Product__r.ProductCode+' }'+ '-'+string.valueof(num+=1);
+            q.OpportunityId= Id.valueOf(oppID);
             q.Order_Quantity__c=decimal.valueOf(Orderquantity);
             q.Supplier__c=p.account__r.Name;
             q.Inventory_Manager__c=userinfo.getuserId();
@@ -136,7 +167,7 @@ public with sharing class GetSuppleirDetails {
     }
     @AuraEnabled
     public static list<Order> OrderRecordsDatatable(){
-        return [SELECT Name,Id,EffectiveDate,Account.Name,Warehouse__c,Warehouse__r.Name,OrderNumber,Status FROM Order ];
+        return [SELECT Name,Id,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status FROM Order WHERE Warehouse__r.Name='Dilsukhnagar' ];
 
     }
     @AuraEnabled

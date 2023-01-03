@@ -6,6 +6,7 @@ import sendemailtosuppliers from '@salesforce/apex/GetSuppleirDetails.sendemailt
 import GetQuoteDetailsdummy from '@salesforce/apex/GetSuppleirDetails.GetQuoteDetailsdummy';
 
 export default class SupplierDatatable extends LightningElement {
+    @api OrdersListDispatch=[];
     @api selectedsuppliersap;
     @api SupplierLIST=[];
     @api selectedOrders=[];
@@ -95,9 +96,16 @@ export default class SupplierDatatable extends LightningElement {
                 
                 
             });
-            OrderRecords({supplierNamesList: this.sendmailtoselected, WarehouseNamesList: this.WarehouseNames,SelectedQuoteRows: this.selectedOrders});
+            console.log('line 99');
+            OrderRecords({supplierNamesList: this.sendmailtoselected, WarehouseNamesList: this.WarehouseNames,SelectedQuoteRows: this.selectedOrders}).then(result=>{
+                console.log('line 101'+JSON.stringify(result));
+                this.OrdersListDispatch=JSON.stringify(result);
+                console.log('LINE 107'+this.OrdersListDispatch);
+
+
+            });
             sendemailtosuppliers({suppliernames : this.sendmailtoselected});
-            
+            console.log('LINE 107'+OrdersListDispatch);
             const evt = new ShowToastEvent({
                 title: 'ORDERS SENT !!!',
                 message: 'The Order Has been sent to the supplier',
