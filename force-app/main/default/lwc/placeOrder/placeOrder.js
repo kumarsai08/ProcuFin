@@ -97,7 +97,7 @@ export default class PlaceOrder extends LightningElement {
         
         SendAnEmail({productid : this.selectedrowonly.Product__c,supplierids: this.ChangeValue,productname : this.selectedrowonly.Product__r.Name,Orderquantity: this.ChangedOrderQuantity,WarehouseName:this.selectedrowonly.Warehouse__r.Name ,productcode:this.selectedrowonly.Product__r.ProductCode}).then(result=>{
             console.log('line 99');
-            this.dispatchEvent(new CustomEvent('Supplierdetails', {detail:{slist:result}}));
+            //this.dispatchEvent(new CustomEvent('Supplierdetails', {detail:{product : productname}}));
             
             
             console.log('line 97'+ JSON.stringify(result));

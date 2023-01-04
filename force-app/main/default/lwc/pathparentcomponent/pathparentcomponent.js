@@ -1,6 +1,7 @@
 import { LightningElement ,api,track} from 'lwc';
 
 export default class Pathparentcomponent extends LightningElement {
+    @api productName;
     
     @track steps = [
         { label: 'Inventory Summary', value: 'Inventory Summary' },
@@ -59,6 +60,11 @@ export default class Pathparentcomponent extends LightningElement {
         this.isSupplierSelection=false;
         this.isOrderSummary=false;
         this.selectedRow=event.detail.row;
+    }
+
+    handleproductname(event){
+        this.productName=event.detail.product;
+
     }
 
 }

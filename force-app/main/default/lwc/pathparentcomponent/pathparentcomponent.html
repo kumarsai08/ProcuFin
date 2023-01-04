@@ -12,7 +12,7 @@
         
     </template>
     <template  if:true={isOrderInv}>
-        <c-place-order selectedrowonly={selectedRow}  ></c-place-order>
+        <c-place-order selectedrowonly={selectedRow} onsupplierdetails= {handleproductname} ></c-place-order>
     </template>
     <template if:true={isSupplierSelection}>
         <c-supplier-datatable  > </c-supplier-datatable>

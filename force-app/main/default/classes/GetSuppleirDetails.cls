@@ -12,7 +12,7 @@ public with sharing class GetSuppleirDetails {
     @AuraEnabled
     public static list<Quote> SendAnEmail(String productid,list<String> supplierids,string productname,String Orderquantity,String WarehouseName,String productcode){
         system.debug('LINE 15'+ productid + supplierids);
-        list<Product_Supplier__c> PSList1= [Select Account__c,Account__r.Email__c,Account__r.Name,Product__r.Name,Product__r.ProductCode From Product_Supplier__c Where Product__r.id=:Productid and Account__c in :supplierids ];
+        list<Product_Supplier__c> PSList1= [Select Account__c,Account__r.Email__c,Account__r.Name,Product__r.Name,Product__c,Product__r.ProductCode From Product_Supplier__c Where Product__r.id=:Productid and Account__c in :supplierids ];
         //string q1='QT'+'-'+'{ '+productname+' }'+ '-'+p.account__r.Name+'-%';
         //List<Quote> Quoteslist=[ SELECT Name,Id FROM QUOTE WHERE Name Like q1];
         //EmailTemplate tempID = [SELECT Id,HTMLValue,Name FROM EmailTemplate WHERE Id =: System.Label.TEMPLATEID];
@@ -41,22 +41,16 @@ public with sharing class GetSuppleirDetails {
         }else {
             oppID=opplist[0].Id;
         }
-        string string1='';
-        string s2='';
-        string s3;
+        
         list<Quote> Quoteslist= [SELECT Name,Id,OpportunityId,Opportunity.Name FROM Quote WHERE OpportunityId =: oppID];
         integer listsize=Quoteslist.size();
         if(Quoteslist.isEmpty()){
              num=0;
         } else {
-            system.debug('line 50');
-            string1=Quoteslist[listsize-1].Name.substringAfter('-');
-            s2=string1.substringAfter('-');
-            s3=s2.substringAfter('-');
-            system.debug('line 53'+s3);
+            
 
-             num=integer.valueOf(s3);
-             system.debug('line 56'+ num);
+             num=listsize;
+             
             
         }
         
@@ -73,6 +67,7 @@ public with sharing class GetSuppleirDetails {
             q.Supplier__c=p.account__r.Name;
             q.Inventory_Manager__c=userinfo.getuserId();
             q.warehouse__c= WarehouseName;
+            q.Product__c=p.Product__c;
             
             Qlist.add(q);
                    
@@ -139,7 +134,7 @@ public with sharing class GetSuppleirDetails {
 
 
     @AuraEnabled
-    public static list<Order> OrderRecords(list<string> supplierNamesList, List<String> WarehouseNamesList,List<Quote> SelectedQuoteRows){
+    public static list<Order> OrderRecords(list<string> supplierNamesList, List<String> WarehouseNamesList,List<Quote> SelectedQuoteRows ){
         system.debug('line 112');
         List<Order> ordlist= new list<Order>();
         list<account> lstacc = [select id,name from account where name in : supplierNamesList];
@@ -158,6 +153,7 @@ public with sharing class GetSuppleirDetails {
             orr.Status='Draft';
             orr.EffectiveDate= System.today();
             orr.Warehouse__c= maploc.get(q.warehouse__c);
+            
             ordlist.add(orr);
             
         }
@@ -167,7 +163,7 @@ public with sharing class GetSuppleirDetails {
     }
     @AuraEnabled
     public static list<Order> OrderRecordsDatatable(){
-        return [SELECT Name,Id,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status FROM Order WHERE Warehouse__r.Name='Dilsukhnagar' ];
+        return [SELECT Name,Id,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status FROM Order WHERE Status='Draft' ];
 
     }
     @AuraEnabled

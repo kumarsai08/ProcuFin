@@ -14,6 +14,7 @@ export default class SupplierDatatable extends LightningElement {
     @api sendmailtoselected=[];
     @api WarehouseNames=[];
     @api mapsupplierandwarehouse={};
+    @api product;
     @track columns = [
     
         {
@@ -63,6 +64,7 @@ export default class SupplierDatatable extends LightningElement {
                    tempRecs.QuoteName= record.Name;
                    tempRecs.openQuote='/'+record.Id;
                    tempRecs.view='view';
+                   //tempRecs.oppName=record.Opportunity.Name;
                     //if(record.Warehouse__r.Name)tempRecs.WarehouseName=record.Warehouse__r.Name;
                    
                    templist.push(tempRecs);
@@ -92,20 +94,17 @@ export default class SupplierDatatable extends LightningElement {
 
                 this.WarehouseNames.push(element.warehouse__c);
                 //console.log('line 82'+ this.sendmailtoselected);
+                this.product=element.Opportunity.Name;
+                console.log('product'+this.product);
 
                 
                 
             });
             console.log('line 99');
-            OrderRecords({supplierNamesList: this.sendmailtoselected, WarehouseNamesList: this.WarehouseNames,SelectedQuoteRows: this.selectedOrders}).then(result=>{
-                console.log('line 101'+JSON.stringify(result));
-                this.OrdersListDispatch=JSON.stringify(result);
-                console.log('LINE 107'+this.OrdersListDispatch);
-
-
-            });
+            console.log('line 100'+ this.sendmailtoselected+ '2-'+ this.WarehouseNames+'3-'+this.selectedOrders);
+            OrderRecords({supplierNamesList: this.sendmailtoselected, WarehouseNamesList: this.WarehouseNames,SelectedQuoteRows: this.selectedOrders});
             sendemailtosuppliers({suppliernames : this.sendmailtoselected});
-            console.log('LINE 107'+OrdersListDispatch);
+            
             const evt = new ShowToastEvent({
                 title: 'ORDERS SENT !!!',
                 message: 'The Order Has been sent to the supplier',

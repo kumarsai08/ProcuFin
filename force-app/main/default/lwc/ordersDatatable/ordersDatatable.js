@@ -4,6 +4,7 @@ import OrderRecordsDatatable from '@salesforce/apex/GetSuppleirDetails.OrderReco
 export default class OrdersDatatable extends LightningElement {
     @api OrderList=[];
     @api OrdersLIST=[];
+    @api ProductName;
     @track columns=[
     
     {
@@ -25,26 +26,27 @@ export default class OrdersDatatable extends LightningElement {
         fieldName: 'suppliername',
         type: 'text',
         sortable: true
-    },
-    /*{
+    },{
+    
         label: 'Warehouse',
         fieldName: 'warehousename',
         type: 'text',
         //typeAttributes: {label: { fieldName: 'WarehouseName' }, target: '_blank'},
         sortable: true
-    },*/
+    },
     {
         label:  'Order Date',
         fieldName: 'EffectiveDate',
         type: 'date',
         sortable: true
-    }
-    /*{
+    },
+    {
+    
         label:  'Order Products',
-        fieldName: 'Productname',
+        fieldName: 'ProductName',
         type: 'text',
         sortable: true
-    },*/
+    }
 ];
 connectedCallback(){
     OrderRecordsDatatable({})
@@ -70,7 +72,7 @@ connectedCallback(){
            console.log('LINE 3'+record.Id);
            //tempRecs.ordername= record.OrderNumber;
            console.log('LINE 4'+record.OrderNumber);
-           //tempRecs.warehousename=record.Warehouse__r.Name;
+           tempRecs.warehousename=record.Warehouse__r.Name;
            
            //if(record.Warehouse__r.Name)tempRecs.warehousename=record.Warehouse__r.Name;
             //Console.log('LINE 5');
