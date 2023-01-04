@@ -90,7 +90,7 @@ public with sharing class GetSuppleirDetails {
         String BodyHtml='';
         for(Quote q:Qlist){
             system.debug('line 34');
-            BodyHtml+='<p> Hello  ' + q.Name +'</p>'
+            BodyHtml+='<p> Hello  ' + q.Supplier__c +'</p>'
                 +'<p>Greetings!</p>'
               +'<p>I am from Procufine DevOrg and I am an inventory manager with Pro.Inc, a pharmaceutical retailer based in Hyderabad.Our company is interested in procuring some of the products that you have to offer.'
               +'More details of our requirements are as follows:!</p>' +
@@ -113,8 +113,8 @@ public with sharing class GetSuppleirDetails {
         system.debug('line 26');
         //Messaging.SendEmailResult[] result= new Messaging.SendEmailResult();
         if(!emailList.isEmpty()){
-            Messaging.SendEmailResult[] result= Messaging.sendEmail(emailList);
-            System.debug('result:'+ result);
+            //Messaging.SendEmailResult[] result= Messaging.sendEmail(emailList);
+            //System.debug('result:'+ result);
         }
       
         return Qlist;    
@@ -125,7 +125,7 @@ public with sharing class GetSuppleirDetails {
     @AuraEnabled
     public static list<Quote> GetQuoteDetails(){
         system.debug('line 89'+[select Id,Name,supplier__c,warehouse__c,Inventory_Manager__c FROM Quote WHERE Inventory_Manager__c =: userinfo.getuserId()  ]);
-        return [select Id,Name,supplier__c,warehouse__c,Inventory_Manager__c FROM Quote WHERE Inventory_Manager__c =: userinfo.getuserId()  ];
+        return [select Id,Name,supplier__c,warehouse__c,Product__c,Inventory_Manager__c FROM Quote WHERE Inventory_Manager__c =: userinfo.getuserId()  ];
     }
     @AuraEnabled
     public static list<Quote> GetQuoteDetailsdummy(){
@@ -151,6 +151,7 @@ public with sharing class GetSuppleirDetails {
             order orr = new order();
             orr.AccountId = mapsupp.get(q.supplier__c);
             orr.Status='Draft';
+            orr.Product__c=q.Product__c;
             orr.EffectiveDate= System.today();
             orr.Warehouse__c= maploc.get(q.warehouse__c);
             
@@ -163,7 +164,7 @@ public with sharing class GetSuppleirDetails {
     }
     @AuraEnabled
     public static list<Order> OrderRecordsDatatable(){
-        return [SELECT Name,Id,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status FROM Order WHERE Status='Draft' ];
+        return [SELECT Name,Id,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status,Product__c,Product__r.Name FROM Order WHERE Status='Draft' ];
 
     }
     @AuraEnabled
@@ -174,15 +175,40 @@ public with sharing class GetSuppleirDetails {
         for(account acc:ac){
             emailsaddress.add(acc.Email__c);                
         }
+        string BodyHtml;
         
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        mail.setSubject('Products Required ');
-        mail.sethtmlbody('productss');
+        mail.setSubject('Products Required, Sent Quote details accepted');
         mail.setToAddresses(emailsaddress);
-        emailList.add(mail);
+        for(string str:suppliernames){
+            BodyHtml= '<p> Hello  ' + str +'</p>'
+                +'<p>Greetings!</p>'
+              +'<p>I am from Procufine DevOrg and I am an inventory manager with Pro.Inc,My team and I reviewed the documents you sent and were very happy with what we read. We are excited at the prospect of using your product .'
+              +'More details of our requirements are as follows:!</p>' +
+              '<p>We want the said quantity of Products and hope it will be delivered soon </p>'+
+              '<p>Looking forward to your reply.</p>'+ 
+              '<p>Thanks,<br>Procufine DevOrg<br>Inventory Manager <br> Pro.Inc., Hyderabad <br> (+91)-1234567890!</p>'+
+                '<p>P.S. Please Reply All on this email with the details and do not change the subject.</p>';
+            mail.sethtmlbody(BodyHtml);
+            emailList.add(mail);
+        }
+        //mail.sethtmlbody(BodyHtml);
+        
+        
          if(!emailList.isEmpty()){
             Messaging.sendEmail(emailList);
         }        
+    }
+
+    @AuraEnabled(Cacheable = true)
+    public static list<Order> searchOrders(String strSupplierName) {
+        strSupplierName = '%' + strSupplierName + '%';
+        list<Order> Orderslist2 = [SELECT Name,Id,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status,Product__c,Product__r.Name FROM Order WHERE Account.Name LIKE :strSupplierName];
+
+        if(Orderslist2.isEmpty()) {
+            throw new AuraHandledException('No Record Found..');
+        }
+        return Orderslist2; 
     }
 
 }

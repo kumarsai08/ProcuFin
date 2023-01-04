@@ -38,7 +38,7 @@ export default class SupplierDatatable extends LightningElement {
             sortable: true
         },
         {
-            label: '',
+            label: 'Open Quote',
             fieldName: 'openQuote',
             type: 'url',
             typeAttributes: {label: { fieldName: 'view' }, target: '_blank'},
@@ -64,6 +64,7 @@ export default class SupplierDatatable extends LightningElement {
                    tempRecs.QuoteName= record.Name;
                    tempRecs.openQuote='/'+record.Id;
                    tempRecs.view='view';
+                   tempRecs.Productname = record.Product__c;
                    //tempRecs.oppName=record.Opportunity.Name;
                     //if(record.Warehouse__r.Name)tempRecs.WarehouseName=record.Warehouse__r.Name;
                    
@@ -94,8 +95,8 @@ export default class SupplierDatatable extends LightningElement {
 
                 this.WarehouseNames.push(element.warehouse__c);
                 //console.log('line 82'+ this.sendmailtoselected);
-                this.product=element.Opportunity.Name;
-                console.log('product'+this.product);
+                //this.product=element.Opportunity.Name;
+                //console.log('product'+this.product);
 
                 
                 

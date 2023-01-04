@@ -34,7 +34,7 @@ export default class PF_InventoryRecordsDatatable extends LightningElement {
         label: '',
         fieldName: 'ButtonAction',
         type: 'button',
-        typeAttributes: {label: 'Pre-Order', target: '_blank',variant: "brand",iconPosition: "right"}
+        typeAttributes: {label: 'Pre-Order', target: '_blank',variant: "brand",iconPosition: "right",class : "slds-align_absolute-center"}
 
     }
     

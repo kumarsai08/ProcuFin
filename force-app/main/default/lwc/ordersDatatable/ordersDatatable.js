@@ -1,6 +1,7 @@
 import { LightningElement ,api,track} from 'lwc';
 import OrderRecords from '@salesforce/apex/GetSuppleirDetails.OrderRecords';
 import OrderRecordsDatatable from '@salesforce/apex/GetSuppleirDetails.OrderRecordsDatatable';
+import searchOrders from '@salesforce/apex/GetSuppleirDetails.searchOrders';
 export default class OrdersDatatable extends LightningElement {
     @api OrderList=[];
     @api OrdersLIST=[];
@@ -70,7 +71,7 @@ connectedCallback(){
            
            tempRecs.OrderUrl='/'+record.Id;
            console.log('LINE 3'+record.Id);
-           //tempRecs.ordername= record.OrderNumber;
+           tempRecs.ProductName= record.Product__r.Name;
            console.log('LINE 4'+record.OrderNumber);
            tempRecs.warehousename=record.Warehouse__r.Name;
            
@@ -89,4 +90,63 @@ connectedCallback(){
         console.log('line 80-error'+JSON.stringify(error));
     })
 }
+    @track searchData;
+    @track errorMsg = '';
+    @api strSupplierName = '';
+    @api displayFullData;
+    
+
+    handlesuppliername(event) {
+        this.strSupplierName = event.detail.value;
+    }
+
+    handleSearch() {
+        if(!this.strSupplierName) {
+            //this.errorMsg = 'Please enter Supplier name to search.';
+            this.displayFullData=true;
+            this.searchData = undefined;
+            return;
+        }
+        this.displayFullData=false;
+
+        searchOrders({strSupplierName : this.strSupplierName})
+        .then(result => {
+            let templist=[];
+       
+        var newData = JSON.parse(JSON.stringify(result));
+        console.log('line 44'+JSON.stringify(newData));
+
+        
+        newData.forEach(record => {
+           let tempRecs = Object.assign({},record);
+           console.log('LINE 1'+JSON.stringify(tempRecs));
+           
+           //tempRecs.SupplierName = record.supplier__c;
+           tempRecs.suppliername = record.Account.Name;
+           console.log('LINE 2'+record.Account.Name);
+           
+           tempRecs.OrderUrl='/'+record.Id;
+           console.log('LINE 3'+record.Id);
+           tempRecs.ProductName= record.Product__r.Name;
+           console.log('LINE 4'+record.OrderNumber);
+           tempRecs.warehousename=record.Warehouse__r.Name;
+           
+           //if(record.Warehouse__r.Name)tempRecs.warehousename=record.Warehouse__r.Name;
+            //Console.log('LINE 5');
+           
+           templist.push(tempRecs);
+           console.log('LINE 6'+templist);
+        });
+        
+            this.searchData = templist;
+            
+        })
+        .catch(error => {
+            this.searchData = undefined;
+            window.console.log('error =====> '+JSON.stringify(error));
+            if(error) {
+                this.errorMsg = error.body.message;
+            }
+        }) 
+    }
 }
