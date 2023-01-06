@@ -4,6 +4,11 @@ import GetQuoteDetails from '@salesforce/apex/GetSuppleirDetails.GetQuoteDetails
 import OrderRecords from '@salesforce/apex/GetSuppleirDetails.OrderRecords';
 import sendemailtosuppliers from '@salesforce/apex/GetSuppleirDetails.sendemailtosuppliers';
 import GetQuoteDetailsdummy from '@salesforce/apex/GetSuppleirDetails.GetQuoteDetailsdummy';
+//import {LightningElement} from 'lwc';
+import {loadScript} from "lightning/platformResourceLoader";
+import JSPDF from '@salesforce/resourceUrl/jspdf';
+import getContacts from '@salesforce/apex/PdfGenerator.getContactsController';
+
 
 export default class SupplierDatatable extends LightningElement {
     @api OrdersListDispatch=[];
@@ -15,6 +20,53 @@ export default class SupplierDatatable extends LightningElement {
     @api WarehouseNames=[];
     @api mapsupplierandwarehouse={};
     @api product;
+    contactList = [];
+	headers = this.createHeaders([
+		"Id",
+		"Supplier__c",
+		"warehouse__c"
+	]);
+
+	renderedCallback() {
+		Promise.all([
+			loadScript(this, JSPDF)
+		]);
+	}
+
+	generatePdf(){
+		const { jsPDF } = window.jspdf;
+		const doc = new jsPDF({
+			encryption: {
+				userPassword: "user",
+				ownerPassword: "owner",
+				userPermissions: ["print", "modify", "copy", "annot-forms"]
+				// try changing the user permissions granted
+			}
+		});
+
+		doc.text("Bro take your products bruhh", 20, 20);
+		doc.table(30, 30, this.contactList, this.headers, { autosize:true });
+        console.log('line 49' + Json.stringify(doc));
+		//doc.save("demo.pdf");
+	}
+
+	
+
+	createHeaders(keys) {
+		var result = [];
+		for (var i = 0; i < keys.length; i += 1) {
+			result.push({
+				id: keys[i],
+				name: keys[i],
+				prompt: keys[i],
+				width: 65,
+				align: "center",
+				padding: 0
+			});
+		}
+		return result;
+	}
+
     @track columns = [
     
         {
@@ -81,6 +133,12 @@ export default class SupplierDatatable extends LightningElement {
         }
 
         handlePlaceOrder(){
+            
+                getContacts().then(result=>{
+                    this.contactList = result;
+                   // this.generatePdf();
+                });
+            
             //selected rows to send orders
             this.selectedOrders=this.template.querySelector('lightning-datatable').getSelectedRows();
             this.sendmailtoselected=[];
@@ -112,7 +170,10 @@ export default class SupplierDatatable extends LightningElement {
                 variant: 'success'
             });
             this.dispatchEvent(evt);
+
+            
         }
-           
+
+        
         
 }

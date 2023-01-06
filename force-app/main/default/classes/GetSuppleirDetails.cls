@@ -159,18 +159,29 @@ public with sharing class GetSuppleirDetails {
             
         }
         insert ordlist;
+        list<attachment>  atment=new list<attachment>();
+        for (Order o : ordlist) {
+            attachment atc=new attachment();
+            atc.ParentId=o.id;
+            string body='order '+o.OrderNumber;
+            atc.Name=o.OrderNumber + o.Account.Name + '.pdf';
+            atc.Body=EncodingUtil.base64Decode(body);
+            atment.add(atc);
+        }
+        insert atment;
         return ordlist;
 
     }
     @AuraEnabled
-    public static list<Order> OrderRecordsDatatable(){
-        return [SELECT Name,Id,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status,Product__c,Product__r.Name FROM Order WHERE Status='Draft' ];
+    public static list<Order> OrderRecordsDatatable(string Ordertypename){
+        return [SELECT Name,Id,Type,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status,Product__c,Product__r.Name FROM Order WHERE Status='Draft' and Type=:Ordertypename ];
 
     }
     @AuraEnabled
     public static void sendemailtosuppliers(list<string> suppliernames){
         List<Messaging.SingleEmailMessage> emailList = new List<Messaging.SingleEmailMessage>();
         list<account> ac=[select id,name,Email__c from account where name in:suppliernames];
+        system.debug('174'+ ac);
         list<string> emailsaddress=new list<String>();
         for(account acc:ac){
             emailsaddress.add(acc.Email__c);                
@@ -196,14 +207,14 @@ public with sharing class GetSuppleirDetails {
         
         
          if(!emailList.isEmpty()){
-            Messaging.sendEmail(emailList);
+           // Messaging.sendEmail(emailList);
         }        
     }
 
     @AuraEnabled(Cacheable = true)
-    public static list<Order> searchOrders(String strSupplierName) {
+    public static list<Order> searchOrders(String strSupplierName,string Ordertypename) {
         strSupplierName = '%' + strSupplierName + '%';
-        list<Order> Orderslist2 = [SELECT Name,Id,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status,Product__c,Product__r.Name FROM Order WHERE Account.Name LIKE :strSupplierName];
+        list<Order> Orderslist2 = [SELECT Name,Id,Type,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status,Product__c,Product__r.Name FROM Order WHERE (Account.Name LIKE :strSupplierName and Status='Draft') and Type=:Ordertypename ];
 
         if(Orderslist2.isEmpty()) {
             throw new AuraHandledException('No Record Found..');

@@ -5,7 +5,10 @@ import searchOrders from '@salesforce/apex/GetSuppleirDetails.searchOrders';
 export default class OrdersDatatable extends LightningElement {
     @api OrderList=[];
     @api OrdersLIST=[];
+    @api finalisedOrdersList = [];
     @api ProductName;
+    @api OrderTypeValue;
+    @api finalOrderTypeValue;
     @track columns=[
     
     {
@@ -49,8 +52,71 @@ export default class OrdersDatatable extends LightningElement {
         sortable: true
     }
 ];
+
+HandleOrderType(event) {
+    this.OrderTypeValue = event.detail.value;
+   /* if (this.OrderTypeValue=='Finalized') {
+        this.finalOrderTypeValue=this.OrderTypeValue;
+        OrderRecordsDatatable({Ordertypename : this.OrderTypeValue })
+    .then(result=>{
+       this.finalisedOrdersList=result;
+    })
+    .catch(error=>{
+        console.log('line 80-error'+JSON.stringify(error));
+    })
+
+}*/
+
+OrderRecordsDatatable({Ordertypename : this.OrderTypeValue })
+.then(result=>{
+    console.log('line 52'+result);
+    
+    console.log('line40')
+    let templist=[];
+   
+    var newData = JSON.parse(JSON.stringify(result));
+    console.log('line 44'+JSON.stringify(newData));
+
+    
+    newData.forEach(record => {
+       let tempRecs = Object.assign({},record);
+       console.log('LINE 1'+JSON.stringify(tempRecs));
+       
+       //tempRecs.SupplierName = record.supplier__c;
+       tempRecs.suppliername = record.Account.Name;
+       console.log('LINE 2'+record.Account.Name);
+       
+       tempRecs.OrderUrl='/'+record.Id;
+       console.log('LINE 3'+record.Id);
+       tempRecs.ProductName= record.Product__r.Name;
+       console.log('LINE 4'+record.OrderNumber);
+       tempRecs.warehousename=record.Warehouse__r.Name;
+       
+       //if(record.Warehouse__r.Name)tempRecs.warehousename=record.Warehouse__r.Name;
+        //Console.log('LINE 5');
+       
+       templist.push(tempRecs);
+       console.log('LINE 6'+templist);
+       
+    });
+    this.OrdersLIST=templist;
+    console.log('line 61')
+    this.displayFullData=true;
+    
+    
+})
+.catch(error=>{
+    console.log('line 80-error'+JSON.stringify(error));
+})
+
+
+}
+
+
+
 connectedCallback(){
-    OrderRecordsDatatable({})
+    this.OrderTypeValue='Procured';
+    OrderRecordsDatatable({Ordertypename : this.OrderTypeValue })
     .then(result=>{
         console.log('line 52'+result);
         
@@ -95,12 +161,11 @@ connectedCallback(){
     @api strSupplierName = '';
     @api displayFullData;
     
+    displayFullData=true;
 
     handlesuppliername(event) {
         this.strSupplierName = event.detail.value;
-    }
-
-    handleSearch() {
+        console.log(this.strSupplierName);
         if(!this.strSupplierName) {
             //this.errorMsg = 'Please enter Supplier name to search.';
             this.displayFullData=true;
@@ -109,7 +174,7 @@ connectedCallback(){
         }
         this.displayFullData=false;
 
-        searchOrders({strSupplierName : this.strSupplierName})
+        searchOrders({strSupplierName : this.strSupplierName,Ordertypename : this.OrderTypeValue})
         .then(result => {
             let templist=[];
        
@@ -149,4 +214,16 @@ connectedCallback(){
             }
         }) 
     }
+
+    value = 'Procured';
+
+    get options() {
+        return [
+            { label: 'Procured', value: 'Procured' },
+            { label: 'Finalized', value: 'Finalized' }
+        ];
+    }
+
+    
+    
 }

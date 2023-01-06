@@ -1,28 +1,45 @@
 <template>
+
+    
     
     
 
     <lightning-card title="Search with Supplier Name" icon-name="standard:account">
-        <div if:true={errorMsg} style="margin-left: 3%;">
-            <p style="color: red;">{errorMsg}</p>
-        </div>
 
-        <lightning-layout multiple-rows="true" vertical-align="end">
-            <lightning-layout-item size="12" small-device-size="10" medium-device-size="8" large-device-size="6" padding="around-small">
-                    <div class="slds-form-element">
-                            <div class="slds-form-element__control">
-                                    <lightning-input type="text" 
-                                                     label="Enter Supplier Name" 
-                                                     onchange={handlesuppliername} ></lightning-input>
-                            </div>
-                        </div> 
-            </lightning-layout-item>
-            <lightning-layout-item size="12" small-device-size="2" medium-device-size="2" large-device-size="2" padding="around-small">
-                    <lightning-button label="Search" 
-                                      variant="brand" 
-                                      onclick={handleSearch}></lightning-button>
-                </lightning-layout-item>
-            </lightning-layout><br/>
+        <div class="slds-grid">
+            <div class="slds-col"> <div if:true={errorMsg} style="margin-left: 3%;">
+                <p style="color: red;">{errorMsg}</p>
+            </div>
+    
+            <lightning-layout multiple-rows="true" vertical-align="end">
+                <lightning-layout-item size="12" small-device-size="10" medium-device-size="8" large-device-size="6" padding="around-small">
+                        <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                        <lightning-input type="text" 
+                                                         label="Enter Supplier Name" 
+                                                         onchange={handlesuppliername} ></lightning-input>
+                                </div>
+                            </div> 
+                </lightning-layout-item> 
+            </lightning-layout><br/> </div>
+            <div class="slds-col"> <lightning-layout-item size="12" small-device-size="2" medium-device-size="2" large-device-size="2" padding="around-small">
+                <lightning-combobox
+                name="Order Type"
+                label="Select Order Type"
+                value=""
+                placeholder="Select Order Type"
+                options={options}
+                onchange={HandleOrderType}
+                style="width:150px;"
+                required>                    </lightning-combobox>
+                </lightning-layout-item> </div>
+          </div>
+
+        
+            
+                
+                     
+            
 
         <div if:true={searchData}>
             <lightning-datatable data={searchData} 
@@ -37,6 +54,9 @@
     
         </div>
         
+        <div>     </div>
+        
+
     </lightning-card>
     
 </template>
