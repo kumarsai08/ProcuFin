@@ -1,0 +1,69 @@
+<template>
+    <lightning-card>
+<div class="slds-box slds-theme_default">
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+        <thead>
+            <tr>
+                <th class="" scope="col">
+                    <div class="slds-truncate" title="Inventory Name">Name</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div class="slds-truncate" title="Product Name">Product Name</div>
+                  </th>
+                  <th class="" scope="col">
+                      <div class="slds-truncate" title="Opportunity Quantity">Opportunity Quantity</div>
+                    </th>
+                    <th class="" scope="col">
+                      <div class="slds-truncate" title="Stock On Hand">Stock On Hand</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="On Order">On Order</div>
+                      </th>
+                      <th class="" scope="col">
+                        <div class="slds-truncate" title="Defective Quantity">Defective Quantity</div>
+                      </th>
+                      <th class="" scope="col">
+                        <div class="slds-truncate" title="Order Received">Order Received</div>
+                      </th>
+                      <th class="" scope="col">
+                        <div class="slds-truncate" title="Under QA">Under QA</div>
+                      </th>
+                      <th class="" scope="col">
+                        <div class="slds-truncate" title="Reorder Point">Reorder Point</div>
+                      </th>
+                      <th class="" scope="col">
+                        <div class="slds-truncate" title="Preorder"> Pre-order</div>
+                      </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={Inventory} for:item="inv">
+                <tr key={inv.Id}>
+                    <td>{inv.Name}</td>
+                    <td>{inv.Product__r.Name}</td>
+                    
+                    <td><a onclick={getProductName} data-prod={inv.Product__r.Name}>{inv.Quantity__c}</a></td>
+                    <td>{inv.Stock_On_Hand__c}</td>
+                    <td>{inv.On_Order__c}</td>
+                    <td>{inv.Product__r.Rejected_Quantity__c}</td>
+                    <td>{inv.Order__c}</td>
+                    <td>{inv.Under_QA__c}</td>
+                    <td>{inv.Shortfall__c}</td>
+                    <td> 
+                      <template if:true={inv.check} >
+                         <lightning-button variant="brand" label="Pre-Order" title="Preorder" style="width: max-content;display: flex" class="slds-m-left_x-small"></lightning-button>
+                      </template>
+                      
+                        
+                      
+                      
+                      
+                    
+                      </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</div> 
+</lightning-card>
+</template>

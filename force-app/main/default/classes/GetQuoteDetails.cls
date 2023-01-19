@@ -12,7 +12,7 @@ global class GetQuoteDetails implements Messaging.InboundEmailHandler {
                                                                String plaintext= '';
                                                                // Add the email plain text into the local variable 
                                                                plaintext = email.plainTextBody;
-                                                                   string quoteidd=plaintext.substringBetween('quoteid : ','\n');
+                                                                   string quoteidd=plaintext.substringBetween('quoteid:','\n');
                                                                    system.debug('quote id:'+quoteidd);
                                                                    system.debug('plaintext:'+plaintext);
                                                                list<Quote> quote_records=[select id,Name,QuoteNumber from Quote];

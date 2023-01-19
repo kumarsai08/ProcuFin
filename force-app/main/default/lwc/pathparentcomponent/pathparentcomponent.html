@@ -1,25 +1,41 @@
 <template>
-    <lightning-card>
-        <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
-            <template for:each={steps} for:item="step">
-                <lightning-progress-step label={step.label} value={step.value} key={step.label} onclick={moveToCmp} ></lightning-progress-step>
-            </template>
-        </lightning-progress-indicator>
-    </lightning-card>
+    <lightning-card> 
+        <lightning-tabset   active-tab-value={activeTab} >
+            
+                <lightning-tab label="Inventory Management"> <lightning-card>
+                    <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+                        <template for:each={steps} for:item="step">
+                            <lightning-progress-step label={step.label} value={step.value} key={step.label} onclick={moveToCmp} ></lightning-progress-step>
+                        </template>
+                    </lightning-progress-indicator>
+                </lightning-card>
+            
+                <template if:true={isInvSummary}>
+                 <c-test-_-table-_-tag></c-test-_-table-_-tag>
+                    
+                </template>
+                <template  if:true={isOrderInv}>
+                    <c-place-order selectedrowonly={selectedRow} onsupplierdetails= {handleproductname} ></c-place-order>
+                </template>
+                <template if:true={isSupplierSelection}>
+                    <c-supplier-datatable  > </c-supplier-datatable>
+                </template>
+                <template if:true={isOrderSummary}>
+                    <c-orders-datatable  > </c-orders-datatable>
+                </template> </lightning-tab>
+            
+                <lightning-tab label="Opportunity Information"> 
+                    <c-opp-quantity-url> </c-opp-quantity-url> 
 
-    <template if:true={isInvSummary}>
-        <c-p-F_-Inventory-Records-Datatable onvaluee={handleAnswer}> </c-p-F_-Inventory-Records-Datatable>
-        
-    </template>
-    <template  if:true={isOrderInv}>
-        <c-place-order selectedrowonly={selectedRow} onsupplierdetails= {handleproductname} ></c-place-order>
-    </template>
-    <template if:true={isSupplierSelection}>
-        <c-supplier-datatable  > </c-supplier-datatable>
-    </template>
-    <template if:true={isOrderSummary}>
-        <c-orders-datatable  > </c-orders-datatable>
-    </template>
+                </lightning-tab>
+    
+            
+            
+            
+        </lightning-tabset>
+    </lightning-card>
+    
+    
 
     
 </template>

@@ -92,9 +92,9 @@ public with sharing class GetSuppleirDetails {
             system.debug('line 34');
             BodyHtml+='<p> Hello  ' + q.Supplier__c +'</p>'
                 +'<p>Greetings!</p>'
-              +'<p>I am from Procufine DevOrg and I am an inventory manager with Pro.Inc, a pharmaceutical retailer based in Hyderabad.Our company is interested in procuring some of the products that you have to offer.'
+              +'<p>I am the inventory manager from Procufine, a procurement management company based in hyderabad..Our company is interested in procuring some of the products that you have to offer.'
               +'More details of our requirements are as follows:!</p>' +
-              '<table style="width:100%;border-collapse:collapse;text-align:left;"> <tr> <th style="border: 1px solid #dddddd;padding: 5px;">Product Name</th> <th style="border: 1px solid #dddddd;padding: 5px;">Order Quantity</th> <th style="border: 1px solid #dddddd;padding: 5px;">Location</th></tr> <tr> <td style="border: 1px solid #dddddd;padding: 5px;">'+productname+'</td> <td>'+Orderquantity+'</td> <td style="border: 1px solid #dddddd;padding: 5px;">'+WarehouseName+'</td> </tr>  </table>'+
+              '<table style="width:100%;border-collapse:collapse;text-align:left;"> <tr> <th style="border: 1px solid #dddddd;padding: 5px;">Product Name</th> <th style="border: 1px solid #dddddd;padding: 5px;">Order Quantity</th> <th style="border: 1px solid #dddddd;padding: 5px;">Location</th></tr> <tr> <td style="border: 1px solid #dddddd;padding: 5px;">'+productname+'</td> <td style="border: 1px solid #dddddd;padding: 5px;">'+Orderquantity+'</td> <td style="border: 1px solid #dddddd;padding: 5px;">'+WarehouseName+'</td> </tr>  </table>'+
               '<p>Could you please share current availability, best prices and delivery details (lead time, delivery schedule etc.) so that we can take this conversation forward?</p>'+
               '<p>Looking forward to your reply.</p>'+ 
               '<p>Thanks,<br>Procufine DevOrg<br>Inventory Manager <br> Pro.Inc., Hyderabad <br> (+91)-1234567890!</p>'+
@@ -103,7 +103,7 @@ public with sharing class GetSuppleirDetails {
               
               ;
             system.debug(BodyHtml);
-            // mail.setReplyTo('quote_automation@k-cqjr5k147upssfvf9zommipivpinhx2wjv2prh9oj5jqyqnk.5g-i1ljoea3.ap24.apex.salesforce.com');
+            mail.setReplyTo('quote_automation@k-cqjr5k147upssfvf9zommipivpinhx2wjv2prh9oj5jqyqnk.5g-i1ljoea3.ap24.apex.salesforce.com');
             mail.setHtmlBody(BodyHtml);
             emailList.add(mail);  
 
@@ -113,8 +113,8 @@ public with sharing class GetSuppleirDetails {
         system.debug('line 26');
         //Messaging.SendEmailResult[] result= new Messaging.SendEmailResult();
         if(!emailList.isEmpty()){
-            //Messaging.SendEmailResult[] result= Messaging.sendEmail(emailList);
-            //System.debug('result:'+ result);
+            Messaging.SendEmailResult[] result= Messaging.sendEmail(emailList);
+            System.debug('result:'+ result);
         }
       
         return Qlist;    
@@ -125,7 +125,7 @@ public with sharing class GetSuppleirDetails {
     @AuraEnabled
     public static list<Quote> GetQuoteDetails(){
         system.debug('line 89'+[select Id,Name,supplier__c,warehouse__c,Inventory_Manager__c FROM Quote WHERE Inventory_Manager__c =: userinfo.getuserId()  ]);
-        return [select Id,Name,supplier__c,warehouse__c,Product__c,Inventory_Manager__c FROM Quote WHERE Inventory_Manager__c =: userinfo.getuserId()  ];
+        return [select Id,Name,supplier__c,warehouse__c,Product__c,Order_Quantity__c,Inventory_Manager__c FROM Quote WHERE Inventory_Manager__c =: userinfo.getuserId()  ];
     }
     @AuraEnabled
     public static list<Quote> GetQuoteDetailsdummy(){
@@ -151,36 +151,75 @@ public with sharing class GetSuppleirDetails {
             order orr = new order();
             orr.AccountId = mapsupp.get(q.supplier__c);
             orr.Status='Draft';
+            orr.Type='Procured';
             orr.Product__c=q.Product__c;
             orr.EffectiveDate= System.today();
             orr.Warehouse__c= maploc.get(q.warehouse__c);
+            orr.Order_Quantity__c=q.Order_Quantity__c;
+            //orr.TotalAmount=q.Order_Quantity__c;
             
             ordlist.add(orr);
             
         }
         insert ordlist;
         list<attachment>  atment=new list<attachment>();
-        for (Order o : ordlist) {
-            attachment atc=new attachment();
-            atc.ParentId=o.id;
-            string body='order '+o.OrderNumber;
-            atc.Name=o.OrderNumber + o.Account.Name + '.pdf';
-            atc.Body=EncodingUtil.base64Decode(body);
-            atment.add(atc);
+        list<String> Orderidslist = new List<String>();
+        for (Order ordd : ordlist) {
+            Orderidslist.add(ordd.Id);
+            
         }
-        insert atment;
-        return ordlist;
+        List<Order> Orderslist2 = [SELECT Name,Id,EffectiveDate,OrderNumber,Product__c,Warehouse__c,Account.Name,Product__r.Name,Warehouse__r.Name FROM Order WHERE Id in : Orderidslist];
+        for (Order o : Orderslist2) {
+            // attachment atc=new attachment();
+            // atc.ParentId=o.id;
+            System.debug('Order:'+o.Account.Name);
+            string body='<p> Hello  ' + o.Account.Name +'</p>'
+            +'<p>Greetings!</p>'
+          +'<p>I am from Procufine DevOrg and I am an inventory manager with Pro.Inc, We  are pleased with your quote details and have deicded to accept your offer '
 
-    }
-    @AuraEnabled
-    public static list<Order> OrderRecordsDatatable(string Ordertypename){
-        return [SELECT Name,Id,Type,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status,Product__c,Product__r.Name FROM Order WHERE Status='Draft' and Type=:Ordertypename ];
+          +'Details of our Order requirements are as follows:!</p>' +
 
-    }
-    @AuraEnabled
-    public static void sendemailtosuppliers(list<string> suppliernames){
+          '<table style="width:100%;border-collapse:collapse;text-align:left;"> <tr> <th style="border: 1px solid #dddddd;padding: 5px;">Product Name</th> <th style="border: 1px solid #dddddd;padding: 5px;">Order Quantity</th> <th style="border: 1px solid #dddddd;padding: 5px;">Location</th></tr> <tr> <td style="border: 1px solid #dddddd;padding: 5px;">'+o.Product__r.Name  +'</td> <td style="border: 1px solid #dddddd;padding: 5px;">'+o.Order_Quantity__c+'</td> <td style="border: 1px solid #dddddd;padding: 5px;">'+o.Warehouse__r.Name    +'</td> </tr>  </table>'+
+
+          '<p>Could you please share current availability, best prices and delivery details (lead time, delivery schedule etc.) so that we can take this conversation forward?</p>'+
+
+
+          '<p>Looking forward to your reply.</p>'+ 
+          '<p>Thanks,<br>Procufine DevOrg<br>Inventory Manager <br> Pro.Inc., Hyderabad <br> (+91)-1234567890!</p>'+
+          'P.S. Please Reply All on this email with the details and do not change the subject';
+            // atc.Name=o.OrderNumber + o.Account.Name + '.pdf';
+            // atc.Body=EncodingUtil.base64Decode(body);
+            // atment.add(atc);
+            Blob b=blob.toPDF(body); 
+            string Name = ''+o.OrderNumber+'-' + o.Account.Name+ '.pdf';
+            //EncodingUtil.base64Decode(body);
+            System.debug('Blob:'+b);
+            ContentVersion cVersion = new ContentVersion();
+            cVersion.ContentLocation = 'S'; //S-Document is in Salesforce. E-Document is outside of Salesforce. L-Document is on a Social Netork.
+            cVersion.PathOnClient = Name; //File name with extention
+            //cVersion.Origin = 'H';//C-Content Origin. H-Chatter Origin.
+            //cVersion.OwnerId = o.OwnerId;//Owner of the file
+            cVersion.Title = Name;//Name of the file
+            cVersion.VersionData =b ;//File content
+            Insert cVersion;
+            system.debug('cVersion'+ cVersion);
+            
+            //After saved the Content Verison, get the ContentDocumentId
+            Id conDocument = [SELECT ContentDocumentId FROM ContentVersion WHERE Id =:cVersion.Id].ContentDocumentId;
+            
+            //Insert ContentDocumentLink
+            ContentDocumentLink cDocLink = new ContentDocumentLink();
+            cDocLink.ContentDocumentId = conDocument;//Add ContentDocumentId
+            cDocLink.LinkedEntityId = o.Id;//Add attachment parentId
+            cDocLink.ShareType = 'I';//V - Viewer permission. C - Collaborator permission. I - Inferred permission.
+           cDocLink.Visibility = 'AllUsers';//AllUsers, InternalUsers, SharedUsers
+            Insert cDocLink;
+            system.debug('cDocLink' + cDocLink);
+
+
+
         List<Messaging.SingleEmailMessage> emailList = new List<Messaging.SingleEmailMessage>();
-        list<account> ac=[select id,name,Email__c from account where name in:suppliernames];
+        list<account> ac=[select id,name,Email__c from account where name in:supplierNamesList];
         system.debug('174'+ ac);
         list<string> emailsaddress=new list<String>();
         for(account acc:ac){
@@ -191,7 +230,7 @@ public with sharing class GetSuppleirDetails {
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
         mail.setSubject('Products Required, Sent Quote details accepted');
         mail.setToAddresses(emailsaddress);
-        for(string str:suppliernames){
+        for(string str:supplierNamesList){
             BodyHtml= '<p> Hello  ' + str +'</p>'
                 +'<p>Greetings!</p>'
               +'<p>I am from Procufine DevOrg and I am an inventory manager with Pro.Inc,My team and I reviewed the documents you sent and were very happy with what we read. We are excited at the prospect of using your product .'
@@ -201,14 +240,35 @@ public with sharing class GetSuppleirDetails {
               '<p>Thanks,<br>Procufine DevOrg<br>Inventory Manager <br> Pro.Inc., Hyderabad <br> (+91)-1234567890!</p>'+
                 '<p>P.S. Please Reply All on this email with the details and do not change the subject.</p>';
             mail.sethtmlbody(BodyHtml);
+            Messaging.EmailFileAttachment efa = new Messaging.EmailFileAttachment();
+            efa.setFileName(Name);
+            efa.setBody(b);
+            mail.setFileAttachments(new Messaging.EmailFileAttachment[] {efa});
+
+
             emailList.add(mail);
         }
         //mail.sethtmlbody(BodyHtml);
         
         
          if(!emailList.isEmpty()){
-           // Messaging.sendEmail(emailList);
+           Messaging.sendEmail(emailList);
         }        
+
+
+        }
+        
+        return ordlist;
+
+    }
+    @AuraEnabled
+    public static list<Order> OrderRecordsDatatable(string Ordertypename){
+        return [SELECT Name,Id,Type,EffectiveDate,Account.Name,Warehouse__r.Name,OrderNumber,Status,Product__c,Product__r.Name FROM Order WHERE Status='Draft' and Type=:Ordertypename ];
+
+    }
+    @AuraEnabled
+    public static void sendemailtosuppliers(list<string> suppliernames){
+        
     }
 
     @AuraEnabled(Cacheable = true)
@@ -220,6 +280,14 @@ public with sharing class GetSuppleirDetails {
             throw new AuraHandledException('No Record Found..');
         }
         return Orderslist2; 
+    }
+
+    @AuraEnabled
+    public static list<OpportunityLineItem> opprecords(string productname){
+        //string p=productname;
+        return [SELECT id, Opportunity.name,Opportunity.TotalOpportunityQuantity,Product2.name ,OpportunityId,  Opportunity.CloseDate,Opportunity.OrderNumber__c,Opportunity.StageName,Opportunity.Delivery_Status__c FROM OpportunityLineItem  ];
+       // WHERE Product2.name=: productname
+
     }
 
 }
