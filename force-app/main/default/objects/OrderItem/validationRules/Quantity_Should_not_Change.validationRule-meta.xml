@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Quantity_Should_not_Change</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(NOT(ISPICKVAL(Status__c , &quot;Order Placed&quot;)),ISCHANGED(Quantity))</errorConditionFormula>
+    <errorMessage>Quantity can&apos;t change when status is other than order placed</errorMessage>
+</ValidationRule>

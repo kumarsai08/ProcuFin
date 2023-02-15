@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Order_Quantity_Should_Not_Change</fullName>
+    <active>false</active>
+    <errorConditionFormula>NOT( ISPICKVAL( Status , &quot;Order Placed&quot;) )</errorConditionFormula>
+    <errorMessage>Order Quantity cannot change once status is Received or Under QA or QA Completed</errorMessage>
+</ValidationRule>

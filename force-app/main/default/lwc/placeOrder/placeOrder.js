@@ -111,6 +111,8 @@ export default class PlaceOrder extends LightningElement {
             variant: 'success'
         });
         this.dispatchEvent(evt);
+
+
         console.log('line 82'+  this.ChangeValue);
          
     }

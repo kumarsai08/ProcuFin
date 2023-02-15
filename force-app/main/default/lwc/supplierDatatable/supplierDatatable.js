@@ -78,7 +78,7 @@ export default class SupplierDatatable extends LightningElement {
         },
         {
             label: 'Location',
-            fieldName: 'locationName',
+            fieldName: 'warehouse__c',
             type: 'text',
             sortable: true
         },
@@ -112,7 +112,7 @@ export default class SupplierDatatable extends LightningElement {
                    let tempRecs = Object.assign({},record);
                    
                    //tempRecs.SupplierName = record.supplier__c;
-                   tempRecs.locationName = record.warehouse__c;
+                   //tempRecs.locationName = record.warehouse__c;
                    tempRecs.QuoteName= record.Name;
                    tempRecs.openQuote='/'+record.Id;
                    tempRecs.view='view';

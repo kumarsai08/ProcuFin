@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>order_canceled_to_recieved</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(ISPICKVAL(PRIORVALUE( Status ),&quot;Order Canceled&quot;), OR((ISPICKVAL( Status ,&quot;Order Recieved&quot;)),(ISPICKVAL( Status ,&quot;Order Placed&quot;))))</errorConditionFormula>
+    <errorMessage>Can&apos;t change the order status,it is already canceled.</errorMessage>
+</ValidationRule>

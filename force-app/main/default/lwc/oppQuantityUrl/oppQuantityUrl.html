@@ -1,7 +1,7 @@
 <template>
-    
-    <template if:true={OppquantityList}>
-        <lightning-datatable data={OppquantityList} columns={columns} key-field="Id" onrowaction={handleClick}>
+    <lightning-button class="slds-m-left_x-small" label="Close" onclick={closeTab} variant="base"></lightning-button>
+    <template if:true={listopportunities}>
+        <lightning-datatable data={listopportunities} columns={columns} key-field="Id" onrowaction={handleClick}>
         </lightning-datatable>
        
     </template>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>FK_NAME</field>
+    </columns>
+    <columns>
+        <field>Inventory__c.Quantity__c</field>
+    </columns>
+    <columns>
+        <field>Inventory__c.Stock_On_Hand__c</field>
+    </columns>
+    <columns>
+        <field>Inventory__c.On_Order__c</field>
+    </columns>
+    <columns>
+        <field>FK_$Product2.Rejected_Quantity__c</field>
+    </columns>
+    <columns>
+        <field>Inventory__c.Order__c</field>
+    </columns>
+    <columns>
+        <field>Inventory__c.Under_QA__c</field>
+    </columns>
+    <columns>
+        <field>Inventory__c.Shortfall__c</field>
+    </columns>
+    <format>Tabular</format>
+    <name>Inventory Manager Report</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$Inventory__c@Inventory__c.Product__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

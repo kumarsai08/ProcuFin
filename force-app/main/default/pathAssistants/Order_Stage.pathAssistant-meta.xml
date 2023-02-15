@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PathAssistant xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <entityName>Order</entityName>
+    <fieldName>Status</fieldName>
+    <masterLabel>Order Stage</masterLabel>
+    <pathAssistantSteps>
+        <fieldNames>Status</fieldNames>
+        <picklistValueName>Partial Quantity Under QA</picklistValueName>
+    </pathAssistantSteps>
+    <recordTypeName>Purchase_Orderr</recordTypeName>
+</PathAssistant>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status__c</fullName>
+    <externalId>false</externalId>
+    <label>Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Order Placed</fullName>
+                <default>false</default>
+                <label>Order Placed</label>
+            </value>
+            <value>
+                <fullName>Order Received</fullName>
+                <default>false</default>
+                <label>Order Received</label>
+            </value>
+            <value>
+                <fullName>Order Canceled</fullName>
+                <default>false</default>
+                <label>Order Canceled</label>
+            </value>
+            <value>
+                <fullName>Under QA</fullName>
+                <default>false</default>
+                <label>Under QA</label>
+            </value>
+            <value>
+                <fullName>QA Completed</fullName>
+                <default>false</default>
+                <label>QA Completed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

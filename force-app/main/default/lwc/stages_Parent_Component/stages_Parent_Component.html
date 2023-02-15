@@ -18,7 +18,7 @@
       </template>
       <template if:true={PlaceOrder}>
         <lightning-card >
-          <c-place-order selectedrowonly={selectedRow}  ></c-place-order>
+          <c-place-order selectedrowonly={selectedRow} onsupplierselection={moveToSupplierSelection} ></c-place-order>
   
         </lightning-card>
            

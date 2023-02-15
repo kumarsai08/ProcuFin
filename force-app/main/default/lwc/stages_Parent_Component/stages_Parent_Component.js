@@ -24,6 +24,19 @@ export default class Stages_Parent_Component extends LightningElement {
         
 
       }
+
+      moveToSupplierSelection(event){
+                this.currentvalue = event.detail.value;
+               // this.currentvalue= event.detail.value;
+                //this.currentvalue='2';
+                this.selectedvalue = event.detail.label;
+              
+                this.PlaceOrder=false;
+                this.summary=true;
+                this.send=false;
+              }
+        
+        
     pathHandler2(event){
         var targetValue = event.currentTarget.value;
         var selectedvalue = event.currentTarget.label;

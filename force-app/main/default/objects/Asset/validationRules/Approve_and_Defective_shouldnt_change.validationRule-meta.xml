@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Approve_and_Defective_shouldnt_change</fullName>
+    <active>true</active>
+    <errorConditionFormula>OR(AND(ISPICKVAL(PRIORVALUE( Status ), &quot;QA Pass&quot;),ISPICKVAL( Status , &quot;QA Fail&quot;)),AND(ISPICKVAL(PRIORVALUE( Status ), &quot;QA Fail&quot;),ISPICKVAL( Status , &quot;QA Pass&quot;)))</errorConditionFormula>
+    <errorMessage>Once QA Pass or QA Fail is selected it should&apos;nt change</errorMessage>
+</ValidationRule>

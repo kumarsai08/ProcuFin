@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Order_Canceled_to_QA</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(ISPICKVAL(PRIORVALUE( Status ),&quot;Order Canceled&quot;), OR(ISPICKVAL( Status ,&quot;Under QA&quot;),ISPICKVAL( Status ,&quot;QA Completed&quot;)))</errorConditionFormula>
+    <errorMessage>The Order is already CANCELED, Can&apos;t change the STATUS.</errorMessage>
+</ValidationRule>

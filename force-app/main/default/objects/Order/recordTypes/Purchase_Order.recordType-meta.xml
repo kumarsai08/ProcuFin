@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Purchase_Order</fullName>
+    <active>false</active>
+    <label>Purchase Order</label>
+    <picklistValues>
+        <picklist>Status</picklist>
+        <values>
+            <fullName>Fully Received Under QA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Order Placed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partial Quantity Under QA</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type</picklist>
+        <values>
+            <fullName>Finalized</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Procured</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

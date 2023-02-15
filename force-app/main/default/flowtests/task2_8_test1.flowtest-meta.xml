@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowTest xmlns="http://soap.sforce.com/2006/04/metadata">
+    <flowApiName>task2_8</flowApiName>
+    <label>test1</label>
+    <testPoints>
+        <elementApiName>Start</elementApiName>
+        <parameters>
+            <leftValueReference>$Record</leftValueReference>
+            <type>InputTriggeringRecordInitial</type>
+            <value>
+                <sobjectValue>{&quot;Application_Date__c&quot;:&quot;2022-11-21&quot;,&quot;On_Hold_Reason__c&quot;:&quot;Job Posting Fulfilled&quot;,&quot;Status__c&quot;:&quot;Verified&quot;}</sobjectValue>
+            </value>
+        </parameters>
+        <parameters>
+            <leftValueReference>$Record</leftValueReference>
+            <type>InputTriggeringRecordUpdated</type>
+            <value>
+                <sobjectValue>{&quot;Application_Date__c&quot;:&quot;2022-11-21&quot;,&quot;Decline_Reason__c&quot;:&quot;Salary&quot;,&quot;On_Hold_Reason__c&quot;:&quot;Job Posting Fulfilled&quot;,&quot;Source__c&quot;:&quot;Website&quot;,&quot;Status__c&quot;:&quot;In-Process&quot;}</sobjectValue>
+            </value>
+        </parameters>
+    </testPoints>
+    <testPoints>
+        <assertions>
+            <conditions>
+                <leftValueReference>countrounds</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <numberValue>1.0</numberValue>
+                </rightValue>
+            </conditions>
+        </assertions>
+        <elementApiName>Finish</elementApiName>
+    </testPoints>
+</FlowTest>

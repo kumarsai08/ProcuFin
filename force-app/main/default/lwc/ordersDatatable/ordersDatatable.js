@@ -30,14 +30,15 @@ export default class OrdersDatatable extends LightningElement {
         fieldName: 'suppliername',
         type: 'text',
         sortable: true
-    },{
-    
-        label: 'Warehouse',
-        fieldName: 'warehousename',
-        type: 'text',
-        //typeAttributes: {label: { fieldName: 'WarehouseName' }, target: '_blank'},
-        sortable: true
     },
+    // {
+    
+    //     label: 'Warehouse',
+    //     fieldName: 'warehousename',
+    //     type: 'text',
+    //     //typeAttributes: {label: { fieldName: 'WarehouseName' }, target: '_blank'},
+    //     sortable: true
+    // },
     {
         label:  'Order Date',
         fieldName: 'EffectiveDate',
@@ -55,6 +56,7 @@ export default class OrdersDatatable extends LightningElement {
 
 HandleOrderType(event) {
     this.OrderTypeValue = event.detail.value;
+    console.log('type:'+this.OrderTypeValue);
    /* if (this.OrderTypeValue=='Finalized') {
         this.finalOrderTypeValue=this.OrderTypeValue;
         OrderRecordsDatatable({Ordertypename : this.OrderTypeValue })
@@ -88,9 +90,9 @@ OrderRecordsDatatable({Ordertypename : this.OrderTypeValue })
        
        tempRecs.OrderUrl='/'+record.Id;
        console.log('LINE 3'+record.Id);
-       tempRecs.ProductName= record.Product__r.Name;
-       console.log('LINE 4'+record.OrderNumber);
-       tempRecs.warehousename=record.Warehouse__r.Name;
+       if(record.Product__r.Name!==null){ tempRecs.ProductName= record.Product__r.Name};
+       console.log('LINE 4');
+      // if(record.Warehouse__r.Name!==null){ tempRecs.warehousename=record.Warehouse__r.Name};
        
        //if(record.Warehouse__r.Name)tempRecs.warehousename=record.Warehouse__r.Name;
         //Console.log('LINE 5');
@@ -139,7 +141,7 @@ connectedCallback(){
            console.log('LINE 3'+record.Id);
            tempRecs.ProductName= record.Product__r.Name;
            console.log('LINE 4'+record.OrderNumber);
-           tempRecs.warehousename=record.Warehouse__r.Name;
+           //tempRecs.warehousename=record.Warehouse__r.Name;
            
            //if(record.Warehouse__r.Name)tempRecs.warehousename=record.Warehouse__r.Name;
             //Console.log('LINE 5');
@@ -194,7 +196,7 @@ connectedCallback(){
            console.log('LINE 3'+record.Id);
            tempRecs.ProductName= record.Product__r.Name;
            console.log('LINE 4'+record.OrderNumber);
-           tempRecs.warehousename=record.Warehouse__r.Name;
+           //tempRecs.warehousename=record.Warehouse__r.Name;
            
            //if(record.Warehouse__r.Name)tempRecs.warehousename=record.Warehouse__r.Name;
             //Console.log('LINE 5');
